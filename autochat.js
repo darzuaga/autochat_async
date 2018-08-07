@@ -1,5 +1,21 @@
-(function () {
+function loadScriptsSync (src) {
 
+    src.forEach(function(jsScript){
+        var s = document.createElement('script');
+        s.src = jsScript;
+        s.type = "text/javascript";
+        s.async = false;
+        document.head.appendChild(s);
+    })
+}
+
+loadScriptsSync([
+    "//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js",
+    "https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js",
+    "https://www.gstatic.com/firebasejs/5.0.4/firebase-firestore.js"
+])
+
+function setup() {
     var options = {
         pageviewsEventName: "pageviews",
         inputChangeEventName: "input-changes",
@@ -380,4 +396,83 @@
 
   window.CommonWeb = CommonWeb;
 
-})();
+}
+
+function track(){
+    var config = {
+      apiKey: "AIzaSyCDfHcJFiyKwiSwCNzobVCHNLx41P0vb4o",
+      authDomain: "autochat-42b74.firebaseapp.com",
+      databaseURL: "https://autochat-42b74.firebaseio.com",
+      projectId: "autochat-42b74",
+      storageBucket: "autochat-42b74.appspot.com",
+      messagingSenderId: "482034377592"
+    }
+
+    firebase.initializeApp(config);
+    var firestore_settings = {timestampsInSnapshots: true};
+    var firestore = firebase.firestore();
+    firestore.settings(firestore_settings)
+
+    CommonWeb.Callback = function(collection, properties, callback) {
+
+        properties['event_type'] = collection;
+        var pageEventsRef = firestore.collection('page_events')
+        // console.log(properties)
+
+        var refPayload = properties.guid + ":" + properties.autochat_user_id
+
+        var fbChatDiv = document.createElement("div");
+        fbChatDiv.setAttribute('class', 'fb-customerchat')
+        fbChatDiv.setAttribute('attribution', 'setup_tool')
+        fbChatDiv.setAttribute('page_id', '580945448906540')
+        fbChatDiv.setAttribute('ref', refPayload)
+        document.body.appendChild(fbChatDiv)
+
+        // add pageview event to firestore db
+        pageEventsRef.add(properties)
+    }
+
+    CommonWeb.addGlobalProperties({
+        autochat_user_id: '580945448906540'
+    })
+
+    // track session with a GUID
+    CommonWeb.trackSession()
+
+    // track pageviews
+    CommonWeb.trackPageview()
+
+    // track link clicks
+    CommonWeb.trackClicks()
+
+}
+
+(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+window.fbAsyncInit = function(){
+    FB.init({
+        appId            : '480068992186812',
+        autoLogAppEvents : true,
+        xfbml            : true,
+        version          : 'v2.11'
+    })
+}
+
+function init() {
+    var haveScriptsLoaded = window.jQuery && window.firebase && typeof(window.firebase.firestore) == 'function'
+    
+    if (haveScriptsLoaded) {
+        setup()
+        track()
+    } else {
+        setTimeout(function() { init() }, 50)
+    }
+}
+
+init()
