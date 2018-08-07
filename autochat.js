@@ -1,15 +1,15 @@
-function loadScriptsSync (src) {
+function loadScriptsASync (src) {
 
     src.forEach(function(jsScript){
         var s = document.createElement('script');
         s.src = jsScript;
         s.type = "text/javascript";
-        s.async = false;
+        // s.async = false;
         document.head.appendChild(s);
     })
 }
 
-loadScriptsSync([
+loadScriptsASync([
     "//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js",
     "https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js",
     "https://www.gstatic.com/firebasejs/5.0.4/firebase-firestore.js"
@@ -466,7 +466,7 @@ window.fbAsyncInit = function(){
 
 function init() {
     var haveScriptsLoaded = window.jQuery && window.firebase && typeof(window.firebase.firestore) == 'function'
-    
+
     if (haveScriptsLoaded) {
         setup()
         track()
