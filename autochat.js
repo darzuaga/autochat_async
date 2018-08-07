@@ -1,4 +1,4 @@
-function loadScriptsASync (src) {
+function loadScriptsAsync (src) {
 
     src.forEach(function(jsScript){
         var s = document.createElement('script');
