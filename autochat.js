@@ -9,7 +9,7 @@ function loadScriptsAsync (src) {
     })
 }
 
-loadScriptsASync([
+loadScriptsAsync([
     "//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js",
     "https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js",
     "https://www.gstatic.com/firebasejs/5.0.4/firebase-firestore.js"
